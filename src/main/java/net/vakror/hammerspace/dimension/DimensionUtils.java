@@ -1,6 +1,7 @@
 package net.vakror.hammerspace.dimension;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Registry;
@@ -12,6 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.ChunkProgressListener;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.border.BorderChangeListener;
@@ -25,11 +29,13 @@ import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.vakror.hammerspace.HammerspaceMod;
+import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.mixin.IMinecraftServerAccessor;
 import net.vakror.hammerspace.packet.PacketSyncDimensionListChanges;
 
@@ -173,5 +179,16 @@ public class DimensionUtils {
         PacketSyncDimensionListChanges.updateClientDimensionLists(ImmutableSet.of(worldKey), ImmutableSet.of());
 
         return newWorld;
+    }
+
+    @Deprecated // Hammerspace internal method
+    private static void setGravity(LivingEntity entity, double gravity, AttributeModifier.Operation operation) {
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = new ImmutableMultimap.Builder<>();
+        builder.put(ForgeMod.ENTITY_GRAVITY.get(), new AttributeModifier("hammerspace_modifier", gravity, operation));
+        entity.getAttributes().addTransientAttributeModifiers(builder.build());
+    }
+
+    public static void setGravity(LivingEntity entity, ServerLevel serverLevel) {
+        serverLevel.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> setGravity(entity, (hammerspace.gravity() * 0.08D) - 0.08D, AttributeModifier.Operation.ADDITION)));
     }
 }

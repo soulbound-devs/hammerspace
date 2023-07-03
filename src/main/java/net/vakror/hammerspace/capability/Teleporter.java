@@ -16,6 +16,9 @@ public class Teleporter {
     private BlockPos lastUsedLocation = new BlockPos(0, 64, 0);
     private String fromDimensionTypeId = "minecraft:overworld";
     private boolean hasSizeChanged = false;
+    private double gravity = 1;
+    private int tickSpeed = 1;
+    private double fluidFlowSpeed = 1;
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("dimensionId", dimensionId);
@@ -31,6 +34,9 @@ public class Teleporter {
         nbt.putIntArray("lastUsedLocation", new int[]{lastUsedLocation.getX(), lastUsedLocation.getY(), lastUsedLocation.getZ()});
         nbt.putString("fromDimensionTypeId", fromDimensionTypeId);
         nbt.putBoolean("sizeChanged", hasSizeChanged);
+        nbt.putDouble("gravity", gravity);
+        nbt.putInt("tickSpeed", tickSpeed);
+        nbt.putDouble("fluidFlowSpeed", fluidFlowSpeed);
 
         return nbt;
     }
@@ -49,6 +55,10 @@ public class Teleporter {
         lastUsedLocation = new BlockPos(nbt.getIntArray("lastUsedLocation")[0], nbt.getIntArray("lastUsedLocation")[1], nbt.getIntArray("lastUsedLocation")[2]);
         fromDimensionTypeId = nbt.getString("fromDimensionTypeId");
         hasSizeChanged = nbt.getBoolean("sizeChanged");
+
+        gravity = nbt.getDouble("gravity");
+        tickSpeed = nbt.getInt("tickSpeed");
+        fluidFlowSpeed = nbt.getDouble("fluidFlowSpeed");
     }
 
     public int previousWidth() {
@@ -127,6 +137,30 @@ public class Teleporter {
         return hasSizeChanged;
     }
 
+    public double gravity() {
+        return gravity;
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
+
+    public int tickSpeed() {
+        return tickSpeed;
+    }
+
+    public void setTickSpeed(int tickSpeed) {
+        this.tickSpeed = tickSpeed;
+    }
+
+    public double fluidFlowSpeed() {
+        return fluidFlowSpeed;
+    }
+
+    public void setFluidFlowSpeed(double fluidFlowSpeed) {
+        this.fluidFlowSpeed = fluidFlowSpeed;
+    }
+
     /**
      * <b><h1>ALWAYS</h1></b> Should be called before actually changing the size so that previousSize can be set
      * @param hasSizeChanged - whether the size has changed
@@ -146,6 +180,9 @@ public class Teleporter {
         this.hasSizeChanged = teleporter.hasSizeChanged;
         this.lastUsedLocation = teleporter.lastUsedLocation;
         this.fromDimensionTypeId = teleporter.fromDimensionTypeId;
+        this.tickSpeed = teleporter.tickSpeed;
+        this.gravity = teleporter.gravity;
+        this.fluidFlowSpeed = teleporter.fluidFlowSpeed;
     }
 
     public ResourceLocation getDimIdAsResourceLocation() {

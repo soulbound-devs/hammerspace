@@ -1,9 +1,9 @@
 package net.vakror.hammerspace.event;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.commands.FillCommand;
@@ -11,28 +11,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vakror.hammerspace.HammerspaceMod;
 import net.vakror.hammerspace.block.ModBlocks;
-import net.vakror.hammerspace.block.custom.HammerspaceBorderBlock;
+import net.vakror.hammerspace.capability.Hammerspace;
+import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
+import net.vakror.hammerspace.crafting.SmithingTeleporterUpgradeRecipe;
+import net.vakror.hammerspace.crafting.TeleporterUpgradeRecipe;
+import net.vakror.hammerspace.dimension.DimensionUtils;
 import net.vakror.hammerspace.dimension.Dimensions;
-import net.vakror.hammerspace.item.ModItems;
 import net.vakror.hammerspace.item.custom.TeleporterItem;
 
 import java.util.*;
@@ -41,9 +46,15 @@ public class Events {
     @Mod.EventBusSubscriber(modid = HammerspaceMod.MOD_ID)
     public static class ForgeEvents {
         @SubscribeEvent
-        public static void addHammerspaceCapability(AttachCapabilitiesEvent<ItemStack> event) {
+        public static void addTeleporterCapability(AttachCapabilitiesEvent<ItemStack> event) {
             if (event.getObject().getItem() instanceof TeleporterItem) {
                 event.addCapability(new ResourceLocation(HammerspaceMod.MOD_ID, "teleporter"), new TeleporterProvider());
+            }
+        }
+        @SubscribeEvent
+        public static void addHammerspaceCapability(AttachCapabilitiesEvent<Level> event) {
+            if (event.getObject().dimensionTypeId().equals(Dimensions.HAMMERSPACE_TYPE)) {
+                event.addCapability(new ResourceLocation(HammerspaceMod.MOD_ID, "hammerspace"), new HammerspaceProvider());
             }
         }
 
@@ -56,6 +67,9 @@ public class Events {
                 player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
                     genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
                 }));
+                if (event.getEntity() instanceof LivingEntity living) {
+                    DimensionUtils.setGravity(living, (ServerLevel) event.getLevel());
+                }
             }
         }
 
@@ -90,8 +104,16 @@ public class Events {
         }
 
         @SubscribeEvent
+        public static void onResourceReload(AddReloadListenerEvent event) {
+            TeleporterUpgradeRecipe.REGISTERED_RECIPES.clear();
+            SmithingTeleporterUpgradeRecipe.REGISTERED_RECIPES.clear();
+        }
+
+
+        @SubscribeEvent
         public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
             event.register(Teleporter.class);
+            event.register(Hammerspace.class);
         }
     }
 }

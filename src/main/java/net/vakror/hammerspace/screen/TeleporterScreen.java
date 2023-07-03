@@ -1,20 +1,14 @@
 package net.vakror.hammerspace.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Inventory;
 import net.vakror.hammerspace.HammerspaceMod;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
-import net.vakror.hammerspace.item.custom.TeleporterItem;
 import net.vakror.hammerspace.packet.ModPackets;
 import net.vakror.hammerspace.packet.SyncTeleporterDataC2SPacket;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +20,9 @@ public class TeleporterScreen extends Screen {
     private EditBox editWidth;
     private EditBox editLength;
     private EditBox editHeight;
+    private EditBox editTickSpeed;
+    private EditBox editDimGravity;
+    private EditBox editLiquidFlowSpeed;
     private CheckWidget checkWidget;
     private final Teleporter teleporter;
     private final InteractionHand hand;
@@ -70,6 +67,18 @@ public class TeleporterScreen extends Screen {
         this.editLength = new IntegerEditBox(this.font, this.width / 2 + 8, 80, 80, 20, Component.translatable("hammerspace.teleporter_gui.edit_length.message"), 1, maxLength, shouldUpdateSize, teleporter.length());
         this.editLength.setMaxLength(3);
         this.addWidget(this.editLength);
+
+        this.editTickSpeed = new IntegerEditBox(this.font, this.width / 2 - 152, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.tick_speed.message"), 1, 10, false, 0);
+        this.editTickSpeed.setMaxLength(15);
+        this.addWidget(this.editTickSpeed);
+
+        this.editDimGravity = new DoubleEditBox(this.font, this.width / 2 - 72, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.gravity.message"), 0.01, 255, false, 0);
+        this.editDimGravity.setMaxLength(15);
+        this.addWidget(this.editDimGravity);
+
+        this.editLiquidFlowSpeed = new DoubleEditBox(this.font, this.width / 2 + 8, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.fluid_speed.message"), 0.5, 10, false, 0);
+        this.editLiquidFlowSpeed.setMaxLength(15);
+        this.addWidget(editLiquidFlowSpeed);
         
         this.setInitialFocus(editDimensionId);
         editDimensionId.setEditable(canChangeDimName);
@@ -78,6 +87,9 @@ public class TeleporterScreen extends Screen {
         editWidth.setValue(String.valueOf(teleporter.width()));
         editHeight.setValue(String.valueOf(teleporter.height()));
         editLength.setValue(String.valueOf(teleporter.length()));
+        editTickSpeed.setValue(String.valueOf(teleporter.tickSpeed()));
+        editDimGravity.setValue(String.valueOf(teleporter.gravity()));
+        editLiquidFlowSpeed.setValue(String.valueOf(teleporter.fluidFlowSpeed()));
     }
 
     @Override
@@ -88,6 +100,9 @@ public class TeleporterScreen extends Screen {
         editWidth.tick();
         editHeight.tick();
         editLength.tick();
+        editTickSpeed.tick();
+        editDimGravity.tick();
+        editLiquidFlowSpeed.tick();
     }
 
     @Override
@@ -100,30 +115,13 @@ public class TeleporterScreen extends Screen {
         checkWidget = new CheckWidget(x + 125, y + 125, 18, 18);
 
 
-        if (editDimensionId.getValue().equals("")) {
-            editDimensionId.setSuggestion("Dimension Id");
-        } else {
-            editDimensionId.setSuggestion("");
-        }
-
-        if (editWidth.getValue().equals("")) {
-            editWidth.setSuggestion("Width");
-        }
-        else {
-            editWidth.setSuggestion("");
-        }
-        if (editHeight.getValue().equals("")) {
-            editHeight.setSuggestion("Height");
-        }
-        else {
-            editHeight.setSuggestion("");
-        }
-        if (editLength.getValue().equals("")) {
-            editLength.setSuggestion("Length");
-        }
-        else {
-            editLength.setSuggestion("");
-        }
+        setSuggestionIfValueIsEmpty(editDimensionId, "Dimension ID");
+        setSuggestionIfValueIsEmpty(editWidth, "Width");
+        setSuggestionIfValueIsEmpty(editHeight, "Height");
+        setSuggestionIfValueIsEmpty(editLength, "Length");
+        setSuggestionIfValueIsEmpty(editTickSpeed, "Tick Speed");
+        setSuggestionIfValueIsEmpty(editDimGravity, "Gravity");
+        setSuggestionIfValueIsEmpty(editLiquidFlowSpeed, "Fluid Flow Speed");
 
 
         graphics.drawString(this.font, Component.translatable("hammerspace.teleporter_gui.box.message"), this.width / 2 - 153, 30, 10526880);
@@ -141,12 +139,21 @@ public class TeleporterScreen extends Screen {
         editHeight.render(graphics, mouseX, mouseY, partialTick);
         editLength.render(graphics, mouseX, mouseY, partialTick);
         checkWidget.render(graphics, mouseX, mouseY, partialTick);
+        editTickSpeed.render(graphics, mouseX, mouseY, partialTick);
+        editDimGravity.render(graphics, mouseX, mouseY, partialTick);
+        editLiquidFlowSpeed.render(graphics, mouseX, mouseY, partialTick);
+    }
+
+    public void setSuggestionIfValueIsEmpty(EditBox editBox, String suggestion) {
+        if (editBox.getValue().equals("")) {
+            editBox.setSuggestion(suggestion);
+        }
     }
 
     @Override
     public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
         if (checkWidget != null && checkWidget.isHovered()) {
-            if (!this.editDimensionId.getValue().equals("") && !this.editWidth.getValue().equals("") && !this.editHeight.getValue().equals("") && !this.editLength.getValue().equals("")) {
+            if (!this.editDimensionId.getValue().equals("") && !this.editWidth.getValue().equals("") && !this.editHeight.getValue().equals("") && !this.editLength.getValue().equals("") && !this.editTickSpeed.getValue().equals("") && !this.editDimensionId.getValue().equals("") && !this.editLiquidFlowSpeed.getValue().equals("")) {
                 if ((this.teleporter.width() > Integer.parseInt(this.editWidth.getValue()) || this.teleporter.height() > Integer.parseInt(this.editHeight.getValue()) || this.teleporter.length() > Integer.parseInt(this.editLength.getValue())) && shouldUpdateSize)  {
                     valueIsNotLargerThanBefore = true;
                 } else {
@@ -156,6 +163,9 @@ public class TeleporterScreen extends Screen {
                     this.teleporter.setWidth(Integer.parseInt(this.editWidth.getValue()));
                     this.teleporter.setHeight(Integer.parseInt(this.editHeight.getValue()));
                     this.teleporter.setLength(Integer.parseInt(this.editLength.getValue()));
+                    this.teleporter.setTickSpeed(Integer.parseInt(this.editTickSpeed.getValue()));
+                    this.teleporter.setGravity(Double.parseDouble(this.editDimGravity.getValue()));
+                    this.teleporter.setFluidFlowSpeed(Double.parseDouble(this.editLiquidFlowSpeed.getValue()));
                     ModPackets.sendToServer(new SyncTeleporterDataC2SPacket(this.teleporter, this.hand));
                     assert this.minecraft != null;
                     this.minecraft.setScreen(null);

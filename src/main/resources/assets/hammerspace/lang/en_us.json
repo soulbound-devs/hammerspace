@@ -1,6 +1,9 @@
 {
   "hammerspace.teleporter_gui_title": "Dimension Controller",
   "hammerspace.teleporter_gui.box.message": "Dimension ID",
+  "hammerspace.teleporter_gui.fluid_speed.message": "Liquid Flow Speed",
+  "hammerspace.teleporter_gui.gravity.message": "Gravity",
+  "hammerspace.teleporter_gui.tick_speed.message": "Tick Speed",
   "hammerspace.teleporter_gui.dimensions.message": "Size",
   "hammerspace.teleporter_gui.all_boxes_not_filled_error": "All Fields need to be filled",
   "hammerspace.teleporter_gui.value_not_larger_than_before": "Size needs to be larger than before!",
