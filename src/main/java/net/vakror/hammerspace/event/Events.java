@@ -53,16 +53,9 @@ public class Events {
                 ServerPlayer player = (ServerPlayer) event.getEntity();
                 InteractionHand hand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof TeleporterItem ? InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND;
                 ServerLevel level = (ServerLevel) event.getLevel();
-
-                if (!level.getBlockState(new BlockPos(-1, 63, -1)).getBlock().equals(ModBlocks.BORDER.get())) {
-                    player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
-                        genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
-                    }));
-                } else if (player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).orElse(new Teleporter()).hasSizeChanged()) {
-                    player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
-                        genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
-                    }));
-                }
+                player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
+                    genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
+                }));
             }
         }
 
