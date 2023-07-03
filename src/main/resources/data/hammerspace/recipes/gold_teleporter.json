@@ -1,0 +1,19 @@
+{
+  "type": "hammerspace:teleporter_upgrade",
+  "pattern": [
+    "III",
+    "IMI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "M": {
+      "item": "hammerspace:iron_teleporter"
+    }
+  },
+  "result": {
+    "item": "hammerspace:gold_teleporter"
+  }
+}

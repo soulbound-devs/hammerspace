@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when two adjacent sides are connected.",
+	"parent": "block/cube",
+    "textures": {
+		"particle": "hammerspace:block/border/border0c",
+        "down": "hammerspace:block/border/border1c_e",
+		"up": "hammerspace:block/border/border4c",
+		"north": "hammerspace:block/border/border2c_uw",
+		"south": "hammerspace:block/border/border2c_ue",
+		"west": "hammerspace:block/border/border1c_u",
+		"east": "hammerspace:block/border/border4c"
+    }
+}

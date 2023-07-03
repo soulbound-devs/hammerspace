@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when three adjacent connected sides are a T shape.",
+	"parent": "block/cube",
+    "textures": {
+		"particle": "hammerspace:block/border/border0c",
+        "down": "hammerspace:block/border/border4c",
+		"up": "hammerspace:block/border/border4c",
+		"north": "hammerspace:block/border/border3c_ued",
+		"south": "hammerspace:block/border/border3c_uwd",
+		"west": "hammerspace:block/border/border4c",
+		"east": "hammerspace:block/border/border2c_ud"
+    }
+}

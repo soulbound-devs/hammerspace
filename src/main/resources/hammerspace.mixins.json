@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.vakror.hammerspace.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "hammerspace.refmap.json",
+  "mixins": [
+    "IMinecraftServerAccessor",
+    "MappedRegistryMixin"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}

@@ -1,0 +1,13 @@
+{
+    "__comment": "Model file for four connected sides in a cross shape.",
+	"parent": "block/cube",
+    "textures": {
+		"particle": "hammerspace:block/border/border0c",
+        "down": "hammerspace:block/border/border4c",
+		"up": "hammerspace:block/border/border4c",
+		"north": "hammerspace:block/border/border4c",
+		"south": "hammerspace:block/border/border4c",
+		"west": "hammerspace:block/border/border4c",
+		"east": "hammerspace:block/border/border4c"
+    }
+}

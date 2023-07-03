@@ -1,0 +1,33 @@
+{
+  "hammerspace.teleporter_gui_title": "Dimension Controller",
+  "hammerspace.teleporter_gui.box.message": "Dimension ID",
+  "hammerspace.teleporter_gui.dimensions.message": "Size",
+  "hammerspace.teleporter_gui.all_boxes_not_filled_error": "All Fields need to be filled",
+  "hammerspace.teleporter_gui.value_not_larger_than_before": "Size needs to be larger than before!",
+  "hammerspace.teleporter_gui.edit_width.message": "Width",
+  "hammerspace.teleporter_gui.edit_height.message": "Height",
+  "hammerspace.teleporter_gui.edit_length.message": "Length",
+
+  "item.hammerspace.wood_teleporter": "Wood Dimension Controller",
+  "item.hammerspace.iron_teleporter": "Iron Dimension Controller",
+  "item.hammerspace.gold_teleporter": "Gold Dimension Controller",
+  "item.hammerspace.emerald_teleporter": "Emerald Dimension Controller",
+  "item.hammerspace.diamond_teleporter": "Diamond Dimension Controller",
+  "item.hammerspace.netherite_teleporter": "Netherite Dimension Controller",
+
+  "block.hammerspace.border": "Hammerstone",
+
+  "hammerspace.tooltip.teleporter_1": "§aDimension Controller Tier:§f %s",
+  "hammerspace.tooltip.teleporter_2": "§aDimension ID:§f %s",
+  "hammerspace.tooltip.teleporter_2_not_set": "§cDimension ID Not Yet Set",
+  "hammerspace.tooltip.teleporter_newline": "",
+  "hammerspace.tooltip.teleporter_3": "§aDimension Controller Width:§f %d",
+  "hammerspace.tooltip.teleporter_4": "§aDimension Controller Height:§f %d",
+  "hammerspace.tooltip.teleporter_5": "§aDimension Controller Length:§f %d",
+  "hammerspace.tooltip.teleporter_3_not_set": "§cWidth Not Yet Set",
+  "hammerspace.tooltip.teleporter_4_not_set": "§cHeight Not Yet Set",
+  "hammerspace.tooltip.teleporter_5_not_set": "§cLength Not Yet Set",
+  "hammerspace.tooltip.teleporter_7": "§aDimension Controller Max Width:§f %d",
+  "hammerspace.tooltip.teleporter_8": "§aDimension Controller Max Height:§f %d",
+  "hammerspace.tooltip.teleporter_9": "§aDimension Controller Max Length:§f %d"
+}

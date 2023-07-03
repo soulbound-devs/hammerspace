@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IXI",
+    "XMX",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:ender_eye"
+    },
+    "P": {
+      "item": "minecraft:redstone_block"
+    },
+    "M": {
+      "item": "minecraft:oak_planks"
+    },
+    "X": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "hammerspace:wood_teleporter"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when two sides are connected.",
+	"parent": "block/cube",
+    "textures": {
+		"particle": "hammerspace:block/border/border0c",
+        "down": "hammerspace:block/border/border4c",
+		"up": "hammerspace:block/border/border4c",
+		"north": "hammerspace:block/border/border2c_ud",
+		"south": "hammerspace:block/border/border2c_ud",
+		"west": "hammerspace:block/border/border2c_ud",
+		"east": "hammerspace:block/border/border2c_ud"
+    }
+}

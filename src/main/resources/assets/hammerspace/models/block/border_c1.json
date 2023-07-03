@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when only one side is connected.",
+	"parent": "block/cube",
+    "textures": {
+		"particle": "hammerspace:block/border/border0c",
+        "down": "hammerspace:block/border/border0c",
+		"up": "hammerspace:block/border/border4c",
+		"north": "hammerspace:block/border/border1c_u",
+		"south": "hammerspace:block/border/border1c_u",
+		"west": "hammerspace:block/border/border1c_u",
+		"east": "hammerspace:block/border/border1c_u"
+    }
+}

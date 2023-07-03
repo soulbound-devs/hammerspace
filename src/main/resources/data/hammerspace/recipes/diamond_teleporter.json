@@ -1,0 +1,19 @@
+{
+  "type": "hammerspace:teleporter_upgrade",
+  "pattern": [
+    "III",
+    "IMI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:diamond"
+    },
+    "M": {
+      "item": "hammerspace:emerald_teleporter"
+    }
+  },
+  "result": {
+    "item": "hammerspace:diamond_teleporter"
+  }
+}

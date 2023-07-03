@@ -1,0 +1,15 @@
+{
+  "type": "hammerspace:smithing_upgrade",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "item": "hammerspace:diamond_teleporter"
+  },
+  "result": {
+    "item": "hammerspace:netherite_teleporter"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}
