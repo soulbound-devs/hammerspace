@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
 import net.vakror.hammerspace.dimension.DimensionUtils;
@@ -41,6 +42,11 @@ public class TeleporterItem extends Item {
                     if (!teleporter.dimensionId().equals("")) {
                         if (!level.dimension().location().equals(teleporter.getDimIdAsResourceLocation())) {
                             ServerLevel dimension = DimensionUtils.createWorld(level, teleporter.dimensionId());
+                            dimension.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> {
+                                hammerspace.setGravity(teleporter.gravity());
+                                hammerspace.setTick(teleporter.tickSpeed());
+                                hammerspace.setFluidFlowSpeed(teleporter.fluidFlowSpeed());
+                            }));
                             teleporter.setFromDimensionTypeId(level.dimensionTypeId().location().toString());
                             teleporter.setLastUsedLocation(new BlockPos((int) player.position().x, (int) player.position().y, (int) player.position().z));
                             player.changeDimension(dimension, new HammerspaceTeleporter(player.getItemInHand(hand), (ServerLevel) level, null));
@@ -89,6 +95,8 @@ public class TeleporterItem extends Item {
                 tooltip.add(Component.translatable("hammerspace.tooltip.teleporter_newline"));
 
 
+                tooltip.add(Component.translatable("hammerspace.tooltip.teleporter_gravity", teleporter.gravity()));
+
                 if (teleporter.width() == 0) {
                     tooltip.add(Component.translatable("hammerspace.tooltip.teleporter_3_not_set"));
                 } else {
@@ -100,6 +108,7 @@ public class TeleporterItem extends Item {
                 } else {
                     tooltip.add(Component.translatable("hammerspace.tooltip.teleporter_4", teleporter.height()));
                 }
+
 
                 if (teleporter.length() == 0) {
                     tooltip.add(Component.translatable("hammerspace.tooltip.teleporter_5_not_set"));
