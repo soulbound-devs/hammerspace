@@ -32,5 +32,6 @@
   "hammerspace.tooltip.teleporter_5_not_set": "§cLength Not Yet Set",
   "hammerspace.tooltip.teleporter_7": "§aDimension Controller Max Width:§f %d",
   "hammerspace.tooltip.teleporter_8": "§aDimension Controller Max Height:§f %d",
-  "hammerspace.tooltip.teleporter_9": "§aDimension Controller Max Length:§f %d"
+  "hammerspace.tooltip.teleporter_9": "§aDimension Controller Max Length:§f %d",
+  "hammerspace.tooltip.teleporter_gravity": "§aGravity:§f %f"
 }
