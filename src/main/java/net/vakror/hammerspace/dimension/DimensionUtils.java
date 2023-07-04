@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
@@ -38,14 +39,17 @@ import net.vakror.hammerspace.HammerspaceMod;
 import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.mixin.IMinecraftServerAccessor;
 import net.vakror.hammerspace.packet.PacketSyncDimensionListChanges;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
 public class DimensionUtils {
+    public static final UUID GRAVITY_MODIFIER_UUID = UUID.fromString("cb98278e-21e7-4427-aca5-f5ed36ebf3cb");
     public static boolean isDimensionWithID(String id) {
         return getDimension(id) == null;
     }
@@ -181,14 +185,22 @@ public class DimensionUtils {
         return newWorld;
     }
 
-    @Deprecated // Hammerspace internal method
-    private static void setGravity(LivingEntity entity, double gravity, AttributeModifier.Operation operation) {
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = new ImmutableMultimap.Builder<>();
-        builder.put(ForgeMod.ENTITY_GRAVITY.get(), new AttributeModifier("hammerspace_modifier", gravity, operation));
-        entity.getAttributes().addTransientAttributeModifiers(builder.build());
+    @Deprecated(since = "1.0.0") // Hammerspace internal method
+    private static void setGravity(@NotNull LivingEntity entity, double gravity, AttributeModifier.Operation operation) {
+        AttributeInstance gravityInstance = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+        assert gravityInstance != null;
+        gravityInstance.addTransientModifier(new AttributeModifier(GRAVITY_MODIFIER_UUID, "hammerspace_modifier", gravity, operation));
     }
 
-    public static void setGravity(LivingEntity entity, ServerLevel serverLevel) {
+    public static void setGravity(LivingEntity entity, @NotNull ServerLevel serverLevel) {
         serverLevel.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> setGravity(entity, (hammerspace.gravity() * 0.08D) - 0.08D, AttributeModifier.Operation.ADDITION)));
+    }
+
+    public static void removeGravity(@NotNull LivingEntity entity) {
+        AttributeInstance gravityInstance = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+        assert gravityInstance != null;
+        if (gravityInstance.hasModifier(new AttributeModifier(GRAVITY_MODIFIER_UUID, "hammerspace_modifier", 0, AttributeModifier.Operation.ADDITION))) {
+            gravityInstance.removeModifier(GRAVITY_MODIFIER_UUID);
+        }
     }
 }

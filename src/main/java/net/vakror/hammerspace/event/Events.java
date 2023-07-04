@@ -26,6 +26,7 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vakror.hammerspace.HammerspaceMod;
@@ -70,6 +71,13 @@ public class Events {
                 if (event.getEntity() instanceof LivingEntity living) {
                     DimensionUtils.setGravity(living, (ServerLevel) event.getLevel());
                 }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onLeaveHammerspace(EntityLeaveLevelEvent event) {
+            if (event.getEntity() instanceof Player && !event.getLevel().isClientSide) {
+                DimensionUtils.removeGravity((LivingEntity) event.getEntity());
             }
         }
 
