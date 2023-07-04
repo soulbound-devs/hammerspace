@@ -5,7 +5,8 @@
   "refmap": "hammerspace.refmap.json",
   "mixins": [
     "IMinecraftServerAccessor",
-    "MappedRegistryMixin"
+    "MappedRegistryMixin",
+    "MinecraftServerMixin"
   ],
   "client": [
   ],
