@@ -52,44 +52,53 @@ public class TeleporterScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.editDimensionId = new ResourceLocationEditBox(this.font, this.width / 2 - 152, 40, 300, 20, Component.translatable("hammerspace.teleporter_gui.box.message"));
-        this.editDimensionId.setMaxLength(128);
-        this.addWidget(this.editDimensionId);
+        int x = (width - 256) / 2;
+        int y = (height - 256) / 2;
+        checkWidget = new CheckWidget(x + 105, y + 150, 18, 18);
+        this.addWidget(checkWidget);
 
-        this.editWidth = new IntegerEditBox(this.font, this.width / 2 - 152, 80, 80, 20, Component.translatable("hammerspace.teleporter_gui.edit_width.message"), 1, maxWidth, this.shouldUpdateSize, teleporter.width());
-        this.editWidth.setMaxLength(3);
-        this.addWidget(this.editWidth);
+        this.editDimensionId = addResourceLocationEditBox(- 152, 40, 300, 20, teleporter.dimensionId(), canChangeDimName);
 
-        this.editHeight = new IntegerEditBox(this.font, this.width / 2 - 72, 80, 80, 20, Component.translatable("hammerspace.teleporter_gui.edit_height.message"), 2, maxHeight, shouldUpdateSize, teleporter.height());
-        this.editHeight.setMaxLength(3);
-        this.addWidget(this.editHeight);
+        this.editWidth = addIntEditBox(- 152, 80, 80, 20, teleporter.width(), 1, maxWidth, this.shouldUpdateSize, teleporter.width());
+        this.editHeight = addIntEditBox(- 72, 80, 80, 20, teleporter.height(),2, maxHeight, shouldUpdateSize, teleporter.height());
+        this.editLength = addIntEditBox(8, 80, 80, 20, teleporter.length(), 1, maxLength, shouldUpdateSize, teleporter.length());
 
-        this.editLength = new IntegerEditBox(this.font, this.width / 2 + 8, 80, 80, 20, Component.translatable("hammerspace.teleporter_gui.edit_length.message"), 1, maxLength, shouldUpdateSize, teleporter.length());
-        this.editLength.setMaxLength(3);
-        this.addWidget(this.editLength);
+        this.editTickSpeed = addIntEditBox(- 152, 120, 80, 20, teleporter.tickSpeed(), 1, 10, false, 0);
+        this.editDimGravity = addDoubleEditBox(- 72, 120, 80, 20, teleporter.gravity(), 0.01, 255, false, 0);
+        this.editLiquidFlowSpeed = addDoubleEditBox(8, 120, 80, 20, teleporter.fluidFlowSpeed(), 0.5, 10, false, 0);
 
-        this.editTickSpeed = new IntegerEditBox(this.font, this.width / 2 - 152, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.tick_speed.message"), 1, 10, false, 0);
-        this.editTickSpeed.setMaxLength(15);
-        this.addWidget(this.editTickSpeed);
-
-        this.editDimGravity = new DoubleEditBox(this.font, this.width / 2 - 72, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.gravity.message"), 0.01, 255, false, 0);
-        this.editDimGravity.setMaxLength(15);
-        this.addWidget(this.editDimGravity);
-
-        this.editLiquidFlowSpeed = new DoubleEditBox(this.font, this.width / 2 + 8, 120, 80, 20, Component.translatable("hammerspace.teleporter_gui.fluid_speed.message"), 0.5, 10, false, 0);
-        this.editLiquidFlowSpeed.setMaxLength(15);
-        this.addWidget(editLiquidFlowSpeed);
-        
         this.setInitialFocus(editDimensionId);
-        editDimensionId.setEditable(canChangeDimName);
+    }
 
-        editDimensionId.setValue(teleporter.dimensionId());
-        editWidth.setValue(String.valueOf(teleporter.width()));
-        editHeight.setValue(String.valueOf(teleporter.height()));
-        editLength.setValue(String.valueOf(teleporter.length()));
-        editTickSpeed.setValue(String.valueOf(teleporter.tickSpeed()));
-        editDimGravity.setValue(String.valueOf(teleporter.gravity()));
-        editLiquidFlowSpeed.setValue(String.valueOf(teleporter.fluidFlowSpeed()));
+    public IntegerEditBox addIntEditBox(int x, int y, int width, int height, int initialValue, int min, int max, boolean allowLargerValues, int previous) {
+        IntegerEditBox box = new IntegerEditBox(this.font, this.width / 2 + x, y, width, height, Component.empty(), min, max, allowLargerValues, previous);
+        box.setMaxLength(15);
+        if (initialValue != 0) {
+            box.setValue(String.valueOf(initialValue));
+        }
+        this.addWidget(box);
+        return box;
+    }
+
+    public DoubleEditBox addDoubleEditBox(int x, int y, int width, int height, double initialValue, double min, double max, boolean allowLargerValues, int previous) {
+        DoubleEditBox box = new DoubleEditBox(this.font, this.width / 2 + x, y, width, height, Component.empty(), min, max, allowLargerValues, previous);
+        box.setMaxLength(15);
+        if (initialValue != 0) {
+            box.setValue(String.valueOf(initialValue));
+        }
+        this.addWidget(box);
+        return box;
+    }
+
+    public ResourceLocationEditBox addResourceLocationEditBox(int x, int y, int width, int height, String initialValue, boolean editable) {
+        ResourceLocationEditBox box = new ResourceLocationEditBox(this.font, this.width / 2 + x, y, width, height, Component.empty());
+        box.setMaxLength(128);
+        if (initialValue != null) {
+            box.setValue(initialValue);
+        }
+        box.setEditable(editable);
+        this.addWidget(box);
+        return box;
     }
 
     @Override
@@ -111,9 +120,6 @@ public class TeleporterScreen extends Screen {
 
         int x = (width - 256) / 2;
         int y = (height - 256) / 2;
-
-        checkWidget = new CheckWidget(x + 125, y + 125, 18, 18);
-
 
         setSuggestionIfValueIsEmpty(editDimensionId, "Dimension ID");
         setSuggestionIfValueIsEmpty(editWidth, "Width");
@@ -147,6 +153,8 @@ public class TeleporterScreen extends Screen {
     public void setSuggestionIfValueIsEmpty(EditBox editBox, String suggestion) {
         if (editBox.getValue().equals("")) {
             editBox.setSuggestion(suggestion);
+        } else {
+            editBox.setSuggestion("");
         }
     }
 

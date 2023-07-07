@@ -37,6 +37,12 @@ public class ModPackets {
                 .encoder(SyncTeleporterDataC2SPacket::encode)
                 .consumerMainThread(SyncTeleporterDataC2SPacket::handle)
                 .add();
+
+        net.messageBuilder(SyncHammerspaceS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncHammerspaceS2CPacket::new)
+                .encoder(SyncHammerspaceS2CPacket::encode)
+                .consumerMainThread(SyncHammerspaceS2CPacket::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG packet) {

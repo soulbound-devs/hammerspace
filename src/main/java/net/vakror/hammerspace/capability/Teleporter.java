@@ -16,9 +16,9 @@ public class Teleporter {
     private BlockPos lastUsedLocation = new BlockPos(0, 64, 0);
     private String fromDimensionTypeId = "minecraft:overworld";
     private boolean hasSizeChanged = false;
-    private double gravity = 1;
-    private int tickSpeed = 1;
-    private double fluidFlowSpeed = 1;
+    private double gravity = 0;
+    private int tickSpeed = 0;
+    private double fluidFlowSpeed = 0;
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("dimensionId", dimensionId);

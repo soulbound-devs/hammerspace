@@ -16,7 +16,6 @@ import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
 import net.vakror.hammerspace.dimension.DimensionUtils;
-import net.vakror.hammerspace.dimension.Dimensions;
 import net.vakror.hammerspace.dimension.HammerspaceTeleporter;
 import net.vakror.hammerspace.item.ITeleporterTier;
 import net.vakror.hammerspace.screen.TeleporterScreen;
@@ -43,9 +42,9 @@ public class TeleporterItem extends Item {
                         if (!level.dimension().location().equals(teleporter.getDimIdAsResourceLocation())) {
                             ServerLevel dimension = DimensionUtils.createWorld(level, teleporter.dimensionId());
                             dimension.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> {
-                                hammerspace.setGravity(teleporter.gravity());
                                 hammerspace.setTick(teleporter.tickSpeed());
                                 hammerspace.setFluidFlowSpeed(teleporter.fluidFlowSpeed());
+                                hammerspace.setGravity(teleporter.gravity());
                             }));
                             teleporter.setFromDimensionTypeId(level.dimensionTypeId().location().toString());
                             teleporter.setLastUsedLocation(new BlockPos((int) player.position().x, (int) player.position().y, (int) player.position().z));

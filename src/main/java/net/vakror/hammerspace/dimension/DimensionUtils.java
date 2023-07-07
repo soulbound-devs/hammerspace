@@ -184,23 +184,4 @@ public class DimensionUtils {
 
         return newWorld;
     }
-
-    @Deprecated(since = "1.0.0") // Hammerspace internal method
-    private static void setGravity(@NotNull LivingEntity entity, double gravity, AttributeModifier.Operation operation) {
-        AttributeInstance gravityInstance = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
-        assert gravityInstance != null;
-        gravityInstance.addTransientModifier(new AttributeModifier(GRAVITY_MODIFIER_UUID, "hammerspace_modifier", gravity, operation));
-    }
-
-    public static void setGravity(LivingEntity entity, @NotNull ServerLevel serverLevel) {
-        serverLevel.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> setGravity(entity, (hammerspace.gravity() * 0.08D) - 0.08D, AttributeModifier.Operation.ADDITION)));
-    }
-
-    public static void removeGravity(@NotNull LivingEntity entity) {
-        AttributeInstance gravityInstance = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
-        assert gravityInstance != null;
-        if (gravityInstance.hasModifier(new AttributeModifier(GRAVITY_MODIFIER_UUID, "hammerspace_modifier", 0, AttributeModifier.Operation.ADDITION))) {
-            gravityInstance.removeModifier(GRAVITY_MODIFIER_UUID);
-        }
-    }
 }

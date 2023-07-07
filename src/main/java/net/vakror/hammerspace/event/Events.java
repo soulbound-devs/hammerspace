@@ -1,6 +1,5 @@
 package net.vakror.hammerspace.event;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.core.BlockPos;
@@ -11,9 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,25 +17,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.vakror.hammerspace.HammerspaceMod;
 import net.vakror.hammerspace.block.ModBlocks;
-import net.vakror.hammerspace.capability.Hammerspace;
-import net.vakror.hammerspace.capability.HammerspaceProvider;
-import net.vakror.hammerspace.capability.Teleporter;
-import net.vakror.hammerspace.capability.TeleporterProvider;
+import net.vakror.hammerspace.capability.*;
 import net.vakror.hammerspace.crafting.SmithingTeleporterUpgradeRecipe;
 import net.vakror.hammerspace.crafting.TeleporterUpgradeRecipe;
-import net.vakror.hammerspace.dimension.DimensionUtils;
 import net.vakror.hammerspace.dimension.Dimensions;
 import net.vakror.hammerspace.item.custom.TeleporterItem;
+import net.vakror.hammerspace.packet.ModPackets;
+import net.vakror.hammerspace.packet.SyncHammerspaceS2CPacket;
 
 import java.util.*;
 
@@ -53,7 +45,7 @@ public class Events {
             }
         }
         @SubscribeEvent
-        public static void addHammerspaceCapability(AttachCapabilitiesEvent<Level> event) {
+        public static void addDimensionCapabilities(AttachCapabilitiesEvent<Level> event) {
             if (event.getObject().dimensionTypeId().equals(Dimensions.HAMMERSPACE_TYPE)) {
                 event.addCapability(new ResourceLocation(HammerspaceMod.MOD_ID, "hammerspace"), new HammerspaceProvider());
             }
@@ -62,22 +54,13 @@ public class Events {
         @SubscribeEvent
         public static void onEnterHammerspace(EntityJoinLevelEvent event) {
             if (event.getEntity() instanceof Player && !event.getLevel().isClientSide && event.getLevel().dimensionTypeId().equals(Dimensions.HAMMERSPACE_TYPE)) {
-                ServerPlayer player = (ServerPlayer) event.getEntity();
-                InteractionHand hand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof TeleporterItem ? InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND;
-                ServerLevel level = (ServerLevel) event.getLevel();
-                player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
-                    genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
-                }));
-                if (event.getEntity() instanceof LivingEntity living) {
-                    DimensionUtils.setGravity(living, (ServerLevel) event.getLevel());
-                }
-            }
-        }
-
-        @SubscribeEvent
-        public static void onLeaveHammerspace(EntityLeaveLevelEvent event) {
-            if (event.getEntity() instanceof Player && !event.getLevel().isClientSide) {
-                DimensionUtils.removeGravity((LivingEntity) event.getEntity());
+                    ServerPlayer player = (ServerPlayer) event.getEntity();
+                    InteractionHand hand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof TeleporterItem ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+                    ServerLevel level = (ServerLevel) event.getLevel();
+                    player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
+                        genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
+                    }));
+                    event.getLevel().getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> ModPackets.sendToClient(new SyncHammerspaceS2CPacket(hammerspace.fluidFlowSpeed(), hammerspace.tick(), hammerspace.gravity()), player)));
             }
         }
 
