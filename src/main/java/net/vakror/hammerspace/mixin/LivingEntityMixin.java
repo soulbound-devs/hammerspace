@@ -22,7 +22,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (instance.getAttribute().equals(ForgeMod.ENTITY_GRAVITY.get())) {
             final double[] grav = new double[1];
             grav[0] = 1;
-            level().getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent(gravity -> grav[0] = gravity.gravity());
+            level.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent(gravity -> grav[0] = gravity.gravity());
             return instance.getValue() * grav[0];
         }
         return instance.getValue();

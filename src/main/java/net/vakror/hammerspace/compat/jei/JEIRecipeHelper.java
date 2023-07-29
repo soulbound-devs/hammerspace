@@ -38,7 +38,7 @@ public class JEIRecipeHelper {
     }
 
     public static CraftingRecipe copyShapedRecipe(ShapedRecipe recipe) {
-        return new ShapedRecipe(recipe.getId(), "", recipe.category(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), getResultItem(recipe));
+        return new ShapedRecipe(recipe.getId(), "", recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), getResultItem(recipe));
     }
 
     public static ItemStack getResultItem(Recipe<?> recipe) {
@@ -47,7 +47,6 @@ public class JEIRecipeHelper {
         if (level == null) {
             throw new NullPointerException("level must not be null.");
         }
-        RegistryAccess registryAccess = level.registryAccess();
-        return recipe.getResultItem(registryAccess);
+        return recipe.getResultItem();
     }
 }

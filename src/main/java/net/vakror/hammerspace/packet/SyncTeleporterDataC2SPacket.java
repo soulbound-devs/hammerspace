@@ -1,24 +1,13 @@
 package net.vakror.hammerspace.packet;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
-import net.vakror.hammerspace.item.custom.TeleporterItem;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class SyncTeleporterDataC2SPacket {

@@ -36,7 +36,6 @@ public class HammerspaceMod
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        ModCreativeModeTabs.register(modEventBus);
         Dimensions.register();
         ModRecipes.register(modEventBus);
         ModBlocks.register(modEventBus);

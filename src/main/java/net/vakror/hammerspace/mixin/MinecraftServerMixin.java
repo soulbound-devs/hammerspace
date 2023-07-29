@@ -1,7 +1,5 @@
 package net.vakror.hammerspace.mixin;
 
-import net.minecraft.CrashReport;
-import net.minecraft.ReportedException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -32,6 +30,9 @@ public class MinecraftServerMixin {
                 }
             }
         }));
+        if (!instance.getCapability(HammerspaceProvider.HAMMERSPACE).isPresent()) {
+            tick(instance, booleanSupplier);
+        }
     }
 
     public void tick(ServerLevel level, BooleanSupplier supplier) {

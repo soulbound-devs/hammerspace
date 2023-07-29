@@ -26,12 +26,6 @@ public class ModPackets {
 
         INSTANCE = net;
 
-        net.messageBuilder(PacketSyncDimensionListChanges.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncDimensionListChanges::new)
-                .encoder(PacketSyncDimensionListChanges::encode)
-                .consumerMainThread(PacketSyncDimensionListChanges::handle)
-                .add();
-
         net.messageBuilder(SyncTeleporterDataC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(SyncTeleporterDataC2SPacket::new)
                 .encoder(SyncTeleporterDataC2SPacket::encode)

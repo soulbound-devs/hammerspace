@@ -4,6 +4,7 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 version = mod_version
@@ -37,7 +38,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: mapping_channel, version: mapping_version
+    mappings channel: "${mapping_channel}", version: "${mapping_version}-${minecraft_version}"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -145,6 +146,8 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+
+    maven { url "https://cubicinterpolation.net/maven/" }
 }
 
 dependencies {
@@ -163,6 +166,8 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+
+    implementation fg.deobf("commoble.infiniverse:${infiniverse_branch}:${infiniverse_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

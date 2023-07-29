@@ -18,6 +18,8 @@
   "item.hammerspace.diamond_teleporter": "Diamond Dimension Controller",
   "item.hammerspace.netherite_teleporter": "Netherite Dimension Controller",
 
+  "itemGroup.hammerspace": "Hammerspace Tab",
+
   "block.hammerspace.border": "Hammerstone",
 
   "hammerspace.tooltip.teleporter_1": "§aDimension Controller Tier:§f %s",

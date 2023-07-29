@@ -53,14 +53,15 @@ public class Events {
 
         @SubscribeEvent
         public static void onEnterHammerspace(EntityJoinLevelEvent event) {
-            if (event.getEntity() instanceof Player && !event.getLevel().isClientSide && event.getLevel().dimensionTypeId().equals(Dimensions.HAMMERSPACE_TYPE)) {
-                    ServerPlayer player = (ServerPlayer) event.getEntity();
+            if (event.getEntity() instanceof ServerPlayer player && !event.getLevel().isClientSide) {
+                if (event.getLevel().dimensionTypeId().equals(Dimensions.HAMMERSPACE_TYPE)) {
                     InteractionHand hand = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof TeleporterItem ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
                     ServerLevel level = (ServerLevel) event.getLevel();
                     player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
                         genHammerspace(level, teleporter.width(), teleporter.height(), teleporter.length());
                     }));
-                    event.getLevel().getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> ModPackets.sendToClient(new SyncHammerspaceS2CPacket(hammerspace.fluidFlowSpeed(), hammerspace.tick(), hammerspace.gravity()), player)));
+                }
+                event.getLevel().getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> ModPackets.sendToClient(new SyncHammerspaceS2CPacket(hammerspace.randomTick(), hammerspace.tick(), hammerspace.gravity()), player)));
             }
         }
 

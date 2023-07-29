@@ -20,7 +20,7 @@ public class TeleporterUpgradeRecipe extends ShapedRecipe implements IWrapperRec
 	private final ShapedRecipe compose;
 
 	public TeleporterUpgradeRecipe(ShapedRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.category(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.result);
+		super(compose.getId(), compose.getGroup(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(compose.getId());
 	}
@@ -36,8 +36,8 @@ public class TeleporterUpgradeRecipe extends ShapedRecipe implements IWrapperRec
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-		ItemStack upgradedTeleporter = super.assemble(inv, registryAccess);
+	public ItemStack assemble(CraftingContainer inv) {
+		ItemStack upgradedTeleporter = super.assemble(inv);
 		upgradedTeleporter.getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> teleporter.copyOf(getTeleporter(inv).get().getCapability(TeleporterProvider.TELEPORTER).orElse(new Teleporter()))));
 		return upgradedTeleporter;
 	}

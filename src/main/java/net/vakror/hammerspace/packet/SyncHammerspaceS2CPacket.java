@@ -10,23 +10,23 @@ import java.util.function.Supplier;
 public class SyncHammerspaceS2CPacket {
 
     private final int tickSpeed;
-    private final double fluidFlowSpeed;
+    private final int randomTickSpeed;
     private final double gravity;
 
-    public SyncHammerspaceS2CPacket(double fluidFlowSpeed, int tickSpeed, double gravity) {
-        this.fluidFlowSpeed = fluidFlowSpeed;
+    public SyncHammerspaceS2CPacket(int randomTickSpeed, int tickSpeed, double gravity) {
+        this.randomTickSpeed = randomTickSpeed;
         this.tickSpeed = tickSpeed;
         this.gravity = gravity;
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeDouble(fluidFlowSpeed);
+        buf.writeInt(randomTickSpeed);
         buf.writeInt(tickSpeed);
         buf.writeDouble(gravity);
     }
 
     public SyncHammerspaceS2CPacket(FriendlyByteBuf buf) {
-        fluidFlowSpeed = buf.readDouble();
+        randomTickSpeed = buf.readInt();
         tickSpeed = buf.readInt();
         gravity = buf.readDouble();
     }
@@ -35,9 +35,9 @@ public class SyncHammerspaceS2CPacket {
         final NetworkEvent.Context context = contextGetter.get();
         context.enqueueWork(() -> {
             assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.level().getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent(hammerspace -> {
+            Minecraft.getInstance().player.level.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent(hammerspace -> {
                 hammerspace.setTick(tickSpeed);
-                hammerspace.setFluidFlowSpeed(fluidFlowSpeed);
+                hammerspace.setRandomTick(randomTickSpeed);
                 hammerspace.setGravity(gravity);
             });
         });

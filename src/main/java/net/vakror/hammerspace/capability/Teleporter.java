@@ -10,15 +10,11 @@ public class Teleporter {
     private int width = 0;
     private int length = 0;
     private int height = 0;
-    private int previousWidth = 0;
-    private int previousLength = 0;
-    private int previousHeight = 0;
     private BlockPos lastUsedLocation = new BlockPos(0, 64, 0);
     private String fromDimensionTypeId = "minecraft:overworld";
-    private boolean hasSizeChanged = false;
     private double gravity = 0;
     private int tickSpeed = 0;
-    private double fluidFlowSpeed = 0;
+    private int randomTickSpeed = 1;
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("dimensionId", dimensionId);
@@ -27,16 +23,12 @@ public class Teleporter {
         nbt.putInt("length", width);
         nbt.putInt("height", width);
 
-        nbt.putInt("previousWidth", previousWidth);
-        nbt.putInt("previousLength", previousLength);
-        nbt.putInt("previousHeight", previousHeight);
-
         nbt.putIntArray("lastUsedLocation", new int[]{lastUsedLocation.getX(), lastUsedLocation.getY(), lastUsedLocation.getZ()});
         nbt.putString("fromDimensionTypeId", fromDimensionTypeId);
-        nbt.putBoolean("sizeChanged", hasSizeChanged);
+
         nbt.putDouble("gravity", gravity);
         nbt.putInt("tickSpeed", tickSpeed);
-        nbt.putDouble("fluidFlowSpeed", fluidFlowSpeed);
+        nbt.putDouble("randomTickSpeed", randomTickSpeed);
 
         return nbt;
     }
@@ -48,41 +40,12 @@ public class Teleporter {
         length = nbt.getInt("length");
         height = nbt.getInt("height");
 
-        previousWidth = nbt.getInt("previousWidth");
-        previousLength = nbt.getInt("previousLength");
-        previousHeight = nbt.getInt("previousLength");
-
         lastUsedLocation = new BlockPos(nbt.getIntArray("lastUsedLocation")[0], nbt.getIntArray("lastUsedLocation")[1], nbt.getIntArray("lastUsedLocation")[2]);
         fromDimensionTypeId = nbt.getString("fromDimensionTypeId");
-        hasSizeChanged = nbt.getBoolean("sizeChanged");
 
         gravity = nbt.getDouble("gravity");
         tickSpeed = nbt.getInt("tickSpeed");
-        fluidFlowSpeed = nbt.getDouble("fluidFlowSpeed");
-    }
-
-    public int previousWidth() {
-        return previousWidth;
-    }
-
-    public void setPreviousWidth(int previousWidth) {
-        this.previousWidth = previousWidth;
-    }
-
-    public int previousLength() {
-        return previousLength;
-    }
-
-    public void setPreviousLength(int previousLength) {
-        this.previousLength = previousLength;
-    }
-
-    public int previousHeight() {
-        return previousHeight;
-    }
-
-    public void setPreviousHeight(int previousHeight) {
-        this.previousHeight = previousHeight;
+        randomTickSpeed = nbt.getInt("randomTickSpeed");
     }
 
     public String dimensionId() {
@@ -133,10 +96,6 @@ public class Teleporter {
         this.fromDimensionTypeId = fromDimensionTypeId;
     }
 
-    public boolean hasSizeChanged() {
-        return hasSizeChanged;
-    }
-
     public double gravity() {
         return gravity;
     }
@@ -153,23 +112,12 @@ public class Teleporter {
         this.tickSpeed = tickSpeed;
     }
 
-    public double fluidFlowSpeed() {
-        return fluidFlowSpeed;
+    public int randomTickSpeed() {
+        return randomTickSpeed;
     }
 
-    public void setFluidFlowSpeed(double fluidFlowSpeed) {
-        this.fluidFlowSpeed = fluidFlowSpeed;
-    }
-
-    /**
-     * <b><h1>ALWAYS</h1></b> Should be called before actually changing the size so that previousSize can be set
-     * @param hasSizeChanged - whether the size has changed
-     */
-    public void setHasSizeChanged(boolean hasSizeChanged) {
-        this.hasSizeChanged = hasSizeChanged;
-        this.previousWidth = width;
-        this.previousLength = length;
-        this.previousHeight = height;
+    public void setRandomTickSpeed(int randomTickSpeed) {
+        this.randomTickSpeed = randomTickSpeed;
     }
 
     public void copyOf(Teleporter teleporter) {
@@ -177,12 +125,11 @@ public class Teleporter {
         this.length = teleporter.length;
         this.width = teleporter.width;
         this.height = teleporter.height;
-        this.hasSizeChanged = teleporter.hasSizeChanged;
         this.lastUsedLocation = teleporter.lastUsedLocation;
         this.fromDimensionTypeId = teleporter.fromDimensionTypeId;
         this.tickSpeed = teleporter.tickSpeed;
         this.gravity = teleporter.gravity;
-        this.fluidFlowSpeed = teleporter.fluidFlowSpeed;
+        this.randomTickSpeed = teleporter.randomTickSpeed;
     }
 
     public ResourceLocation getDimIdAsResourceLocation() {

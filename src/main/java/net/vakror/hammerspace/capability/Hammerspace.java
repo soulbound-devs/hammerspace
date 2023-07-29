@@ -7,20 +7,20 @@ import net.vakror.hammerspace.HammerspaceMod;
 
 public class Hammerspace {
     private int tick = 1;
-    private double fluidFlowSpeed = 1;
+    private int randomTick = 1;
 
     private double gravity = 1;
     public CompoundTag toNbt() {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("tick", tick);
-        nbt.putDouble("fluidFlowSpeed", fluidFlowSpeed);
+        nbt.putInt("randomTick", tick);
 
         return nbt;
     }
 
     public void fromNbt(CompoundTag nbt) {
         tick = nbt.getInt("tick");
-        fluidFlowSpeed = nbt.getDouble("fluidFlowSpeed");
+        nbt.putInt("randomTick", tick);
     }
 
     public int tick() {
@@ -31,19 +31,19 @@ public class Hammerspace {
         this.tick = tick;
     }
 
-    public double fluidFlowSpeed() {
-        return fluidFlowSpeed;
-    }
-
-    public void setFluidFlowSpeed(double fluidFlowSpeed) {
-        this.fluidFlowSpeed = fluidFlowSpeed;
-    }
-
     public double gravity() {
         return gravity;
     }
 
     public void setGravity(double gravity) {
         this.gravity = gravity;
+    }
+
+    public int randomTick() {
+        return randomTick;
+    }
+
+    public void setRandomTick(int randomTick) {
+        this.randomTick = randomTick;
     }
 }

@@ -1,9 +1,14 @@
 package net.vakror.hammerspace.item.custom;
 
+import commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,10 +17,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
+import net.vakror.hammerspace.HammerspaceMod;
 import net.vakror.hammerspace.capability.HammerspaceProvider;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
-import net.vakror.hammerspace.dimension.DimensionUtils;
+import net.vakror.hammerspace.dimension.Dimensions;
 import net.vakror.hammerspace.dimension.HammerspaceTeleporter;
 import net.vakror.hammerspace.item.ITeleporterTier;
 import net.vakror.hammerspace.screen.TeleporterScreen;
@@ -24,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TeleporterItem extends Item {
@@ -40,10 +50,16 @@ public class TeleporterItem extends Item {
                 player.getItemInHand(hand).getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> {
                     if (!teleporter.dimensionId().equals("")) {
                         if (!level.dimension().location().equals(teleporter.getDimIdAsResourceLocation())) {
-                            ServerLevel dimension = DimensionUtils.createWorld(level, teleporter.dimensionId());
+                            ServerLevel dimension = InfiniverseAPI.get().getOrCreateLevel(((ServerLevel) level).getServer(),
+                                    ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(teleporter.dimensionId())),
+                                    () -> new LevelStem(
+                                            level.registryAccess().
+                                                    registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY)
+                                                    .getHolderOrThrow(Dimensions.HAMMERSPACE_TYPE),
+                                            new FlatLevelSource(BuiltinRegistries.STRUCTURE_SETS, new FlatLevelGeneratorSettings(Optional.empty(), BuiltinRegistries.BIOME))));
                             dimension.getCapability(HammerspaceProvider.HAMMERSPACE).ifPresent((hammerspace -> {
                                 hammerspace.setTick(teleporter.tickSpeed());
-                                hammerspace.setFluidFlowSpeed(teleporter.fluidFlowSpeed());
+                                hammerspace.setRandomTick(teleporter.randomTickSpeed());
                                 hammerspace.setGravity(teleporter.gravity());
                             }));
                             teleporter.setFromDimensionTypeId(level.dimensionTypeId().location().toString());

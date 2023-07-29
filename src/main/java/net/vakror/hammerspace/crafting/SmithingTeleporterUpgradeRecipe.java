@@ -1,28 +1,29 @@
 package net.vakror.hammerspace.crafting;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import net.vakror.hammerspace.capability.Teleporter;
 import net.vakror.hammerspace.capability.TeleporterProvider;
 import net.vakror.hammerspace.item.ModItems;
 import net.vakror.hammerspace.item.custom.TeleporterItem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-public class SmithingTeleporterUpgradeRecipe extends SmithingTransformRecipe implements IWrapperRecipe<SmithingTransformRecipe> {
+public class SmithingTeleporterUpgradeRecipe extends UpgradeRecipe implements IWrapperRecipe<UpgradeRecipe> {
 	public static final Set<ResourceLocation> REGISTERED_RECIPES = new LinkedHashSet<>();
-	private final SmithingTransformRecipe compose;
+	private final UpgradeRecipe compose;
 
-	public SmithingTeleporterUpgradeRecipe(SmithingTransformRecipe compose) {
-		super(compose.getId(), compose.template, compose.base, compose.addition, compose.result);
+	public SmithingTeleporterUpgradeRecipe(UpgradeRecipe compose) {
+		super(compose.getId(), Objects.requireNonNull(ObfuscationReflectionHelper.getPrivateValue(UpgradeRecipe.class, compose, "f_44518_")),
+				Objects.requireNonNull(ObfuscationReflectionHelper.getPrivateValue(UpgradeRecipe.class, compose, "f_44519_")), compose.getResultItem());
 		this.compose = compose;
 		REGISTERED_RECIPES.add(compose.getId());
 	}
@@ -33,14 +34,18 @@ public class SmithingTeleporterUpgradeRecipe extends SmithingTransformRecipe imp
 	}
 
 	@Override
-	public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
-		ItemStack upgradedTeleporter = result.copy();
+	public ItemStack assemble(Container inv) {
+		ItemStack upgradedTeleporter = getCraftingResult().copy();
 		upgradedTeleporter.getCapability(TeleporterProvider.TELEPORTER).ifPresent((teleporter -> teleporter.copyOf(getTeleporter(inv).get().getCapability(TeleporterProvider.TELEPORTER).orElse(new Teleporter()))));
 		return upgradedTeleporter;
 	}
 
+	private ItemStack getCraftingResult() {
+		return Objects.requireNonNull(ObfuscationReflectionHelper.getPrivateValue(UpgradeRecipe.class, this, "f_44520_"));
+	}
+
 	private Optional<ItemStack> getTeleporter(Container inv) {
-		ItemStack slotStack = inv.getItem(1);
+		ItemStack slotStack = inv.getItem(0);
 		if (slotStack.getItem() instanceof TeleporterItem) {
 			return Optional.of(slotStack);
 		}
@@ -48,18 +53,18 @@ public class SmithingTeleporterUpgradeRecipe extends SmithingTransformRecipe imp
 	}
 
 	@Override
-	public @NotNull RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return ModRecipes.SMITHING_UPGRADE_SERIALIZER.get();
 	}
 
 	@Override
-	public SmithingTransformRecipe getCompose() {
+	public UpgradeRecipe getCompose() {
 		return compose;
 	}
 
-	public static class Serializer extends RecipeWrapperSerializer<SmithingTransformRecipe, SmithingTeleporterUpgradeRecipe> {
+	public static class Serializer extends RecipeWrapperSerializer<UpgradeRecipe, SmithingTeleporterUpgradeRecipe> {
 		public Serializer() {
-			super(SmithingTeleporterUpgradeRecipe::new, RecipeSerializer.SMITHING_TRANSFORM);
+			super(SmithingTeleporterUpgradeRecipe::new, RecipeSerializer.SMITHING);
 		}
 	}
 }
